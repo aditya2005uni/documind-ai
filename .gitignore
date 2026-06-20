@@ -1,0 +1,13 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Build files
+target/
+build/
+
+# Application secrets
+src/main/resources/application.properties
+
+# Logs
+*.log

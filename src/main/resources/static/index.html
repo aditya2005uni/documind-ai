@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuMind AI — Chat with your PDFs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Animated background (shader) -->
+<div class="shader-bg" style="mask-image: linear-gradient(to bottom, transparent, black 0%, black 80%, transparent); -webkit-mask-image: linear-gradient(to bottom, transparent, black 0%, black 80%, transparent)">
+    <div data-us-project="ILgOO23w4wEyPQOKyLO4" class="shader-bg-inner"></div>
+</div>
+<script type="text/javascript">
+    !function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();
+</script>
+
+<!-- Background glow (extra depth on top of shader) -->
+<div class="bg-glow"></div>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="#" class="brand">
+            <div class="brand-icon">D</div>
+            <span class="brand-name">DocuMind AI</span>
+        </a>
+        <div class="nav-links">
+            <a href="#app">App</a>
+            <a href="#features">Features</a>
+            <a href="#how">How it works</a>
+            <a href="#usecases">Use Cases</a>
+        </div>
+        <a href="#app" class="btn btn-primary nav-cta">Try it now</a>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-inner reveal">
+        <div class="badge">
+            <span class="dot-ping"><span class="dot-ping-core"></span></span>
+            Powered by RAG &amp; Local LLMs (Ollama)
+        </div>
+        <h1 class="hero-title">Chat with your <span class="grad-text">PDFs</span>,<br>get answers grounded in truth</h1>
+        <p class="hero-sub">
+            DocuMind AI reads your documents, understands them with Retrieval-Augmented Generation,
+            and answers only from what's actually inside your files — no hallucinated guesses, no made-up facts.
+        </p>
+        <div class="hero-cta">
+            <a href="#app" class="btn btn-light">Upload a PDF <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+            <a href="#how" class="btn btn-ghost">See how it works</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== APP SECTION ===================== -->
+<section id="app" class="app-section">
+    <div class="app-inner reveal">
+        <div class="section-head">
+            <span class="eyebrow">Live App</span>
+            <h2>Your Document Assistant</h2>
+            <p>Upload a PDF, ask a question, get an answer sourced strictly from your document.</p>
+        </div>
+
+        <div class="app-grid">
+
+            <!-- Upload Card -->
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-icon icon-indigo">
+                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.6 4.4 0 0 1 0-9 5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1"></path><polyline points="9 15 12 12 15 15"></polyline><line x1="12" y1="12" x2="12" y2="21"></line></svg>
+                    </div>
+                    <h3>Upload PDF</h3>
+                </div>
+                <p class="card-desc">Add a document to your knowledge base. It will be chunked, embedded, and indexed.</p>
+                <label class="file-drop" id="fileDropLabel">
+                    <input type="file" id="pdfFile" accept="application/pdf">
+                    <svg class="icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="15" y2="17"></line></svg>
+                    <span id="fileNameText">Click to choose a PDF, or drag it here</span>
+                </label>
+                <button class="btn btn-primary full" id="uploadBtn" onclick="uploadPdf()">
+                    <span id="uploadBtnIcon" class="btn-spinner-wrap">
+                        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                    </span>
+                    <span id="uploadBtnText">Upload</span>
+                </button>
+            </div>
+
+            <!-- Ask Card -->
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-icon icon-emerald">
+                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    </div>
+                    <h3>Ask a Question</h3>
+                </div>
+                <p class="card-desc">Ask anything from your uploaded PDFs. If it's not in the document, DocuMind AI will tell you so.</p>
+                <div class="ask-row">
+                    <input type="text" id="question" placeholder="e.g. What is the termination clause?">
+                    <button class="btn btn-primary ask-btn" id="askBtn" onclick="askQuestion()">
+                        <span id="askBtnIcon" class="btn-spinner-wrap">
+                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </span>
+                        <span>Ask</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Answer Card -->
+            <div class="card card-wide">
+                <div class="card-head">
+                    <div class="card-icon icon-purple">
+                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg>
+                    </div>
+                    <h3>Answer</h3>
+                    <div id="loader" class="loader"></div>
+                </div>
+                <div id="answer" class="answer-box">Your answer will appear here once you ask a question…</div>
+            </div>
+
+            <!-- PDF List Card -->
+            <div class="card card-wide">
+                <div class="card-head">
+                    <div class="card-icon icon-blue">
+                        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path></svg>
+                    </div>
+                    <h3>Uploaded PDFs</h3>
+                </div>
+                <p class="card-desc">View all documents currently indexed in your knowledge base.</p>
+                <button class="btn btn-ghost-outline" onclick="loadPdfList()">
+                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    Show Uploaded PDFs
+                </button>
+                <ul id="pdfList" class="pdf-list"></ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===================== FEATURES ===================== -->
+<section id="features" class="features-section">
+    <div class="section-head reveal">
+        <span class="eyebrow">Why DocuMind AI</span>
+        <h2>Answers you can actually trust</h2>
+        <p>Built on Retrieval-Augmented Generation so every response is grounded in your own documents.</p>
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature-card reveal">
+            <div class="card-icon icon-indigo"><svg class="icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg></div>
+            <h3>No Hallucinations</h3>
+            <p>If the answer isn't in your PDF, DocuMind AI says so instead of making something up — strict grounding, every time.</p>
+        </div>
+        <div class="feature-card reveal">
+            <div class="card-icon icon-emerald"><svg class="icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg></div>
+            <h3>RAG-Powered Retrieval</h3>
+            <p>Your document is chunked and embedded, then the most relevant passages are retrieved before the model answers.</p>
+        </div>
+        <div class="feature-card reveal">
+            <div class="card-icon icon-purple"><svg class="icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+            <h3>Runs Locally with Ollama</h3>
+            <p>Inference happens through Ollama — your documents and questions don't need to leave your own infrastructure.</p>
+        </div>
+        <div class="feature-card reveal">
+            <div class="card-icon icon-blue"><svg class="icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
+            <h3>Built with Spring AI</h3>
+            <p>A robust Java/Spring AI backend handles embeddings, vector storage, and chat orchestration reliably.</p>
+        </div>
+        <div class="feature-card reveal">
+            <div class="card-icon icon-rose"><svg class="icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="15" y2="17"></line></svg></div>
+            <h3>Multi-Document Library</h3>
+            <p>Upload several PDFs and keep track of everything indexed in your knowledge base at a glance.</p>
+        </div>
+        <div class="feature-card reveal">
+            <div class="card-icon icon-amber"><svg class="icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></div>
+            <h3>Natural Q&amp;A</h3>
+            <p>Ask in plain language. Get clear, concise answers pulled directly from the relevant section of your document.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section id="how" class="how-section">
+    <div class="section-head reveal">
+        <span class="eyebrow">Under the Hood</span>
+        <h2>How DocuMind AI works</h2>
+        <p>A simple, transparent pipeline from raw PDF to trustworthy answer.</p>
+    </div>
+
+    <div class="steps reveal">
+        <div class="step">
+            <div class="step-num">1</div>
+            <h4>Upload</h4>
+            <p>Your PDF is parsed and split into meaningful chunks of text.</p>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <h4>Embed &amp; Store</h4>
+            <p>Each chunk is converted into vector embeddings and stored for fast semantic search.</p>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <h4>Retrieve</h4>
+            <p>When you ask a question, the most relevant chunks are retrieved from your document.</p>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <h4>Answer</h4>
+            <p>The LLM answers using only the retrieved context — or tells you it's not in the document.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== USE CASES ===================== -->
+<section id="usecases" class="usecases-section">
+    <div class="section-head reveal">
+        <span class="eyebrow">Who it's for</span>
+        <h2>Built for anyone who lives in documents</h2>
+    </div>
+    <div class="usecase-grid reveal">
+        <div class="usecase-card">
+            <svg class="icon icon-indigo-txt" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <h4>Legal &amp; Contracts</h4>
+            <p>Quickly find clauses, obligations, and terms buried deep inside lengthy agreements.</p>
+        </div>
+        <div class="usecase-card">
+            <svg class="icon icon-emerald-txt" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            <h4>Research &amp; Study</h4>
+            <p>Ask questions about papers, textbooks, or reports instead of reading them cover to cover.</p>
+        </div>
+        <div class="usecase-card">
+            <svg class="icon icon-purple-txt" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <h4>Finance &amp; Reports</h4>
+            <p>Pull specific figures, summaries, and clauses straight out of invoices and financial reports.</p>
+        </div>
+        <div class="usecase-card">
+            <svg class="icon icon-blue-txt" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <h4>HR &amp; Policies</h4>
+            <p>Let employees self-serve answers from handbooks and policy documents instantly.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="brand">
+            <div class="brand-icon small">D</div>
+            <span class="brand-name">DocuMind AI</span>
+        </div>
+        <p class="footer-note">RAG-based PDF Q&amp;A, powered by Spring AI &amp; Ollama.</p>
+        <p class="footer-copy">© 2025 DocuMind AI. All rights reserved.</p>
+    </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>PDF ChatBot</title>-->
+<!--    <link rel="stylesheet" href="style.css">-->
+<!--</head>-->
+
+<!--<body>-->
+
+<!--<div class="container">-->
+
+<!--    <h1>📄 PDF ChatBot</h1>-->
+
+<!--    <div class="card">-->
+
+<!--        <h2>Upload PDF</h2>-->
+
+<!--        <input type="file" id="pdfFile">-->
+
+<!--        <button onclick="uploadPdf()">-->
+<!--            Upload-->
+<!--        </button>-->
+
+<!--    </div>-->
+
+<!--    <div class="card">-->
+
+<!--        <h2>Ask Question</h2>-->
+
+<!--        <input-->
+<!--                type="text"-->
+<!--                id="question"-->
+<!--                placeholder="Ask anything from uploaded PDFs..."-->
+<!--        >-->
+
+<!--        <button onclick="askQuestion()">-->
+<!--            Ask-->
+<!--        </button>-->
+
+<!--    </div>-->
+
+<!--    <div id="loader" class="loader"></div>-->
+
+<!--    <div class="card">-->
+
+<!--        <h2>Answer</h2>-->
+
+<!--        <div id="answer">-->
+<!--            Your answer will appear here...-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--    <div class="card">-->
+
+<!--        <h2>Uploaded PDFs</h2>-->
+<!--        <button onclick="loadPdfList()">-->
+<!--            Show Uploaded PDFs-->
+<!--        </button>-->
+
+<!--        <ul id="pdfList" style="display:none;">-->
+<!--        </ul>-->
+
+<!--    </div>-->
+
+<!--</div>-->
+
+<!--<script src="app.js"></script>-->
+
+<!--</body>-->
+<!--</html>-->
